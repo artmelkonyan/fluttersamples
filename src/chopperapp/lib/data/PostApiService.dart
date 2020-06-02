@@ -1,6 +1,6 @@
 import 'package:chopper/chopper.dart';
 
-part 'PostApiService.Chopper.dart';
+part 'PostApiService.chopper.dart';
 
 @ChopperApi(baseUrl: 'https://jsonplaceholder.typicode.com/posts')
 abstract class PostApiServie extends ChopperService {
@@ -15,4 +15,6 @@ abstract class PostApiServie extends ChopperService {
   Future<Response> postPost(
     @Body() Map<String,dynamic> body,
   );
+
+  
 }
