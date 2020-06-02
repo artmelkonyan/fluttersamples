@@ -2,8 +2,8 @@ import 'package:chopper/chopper.dart';
 
 part 'PostApiService.chopper.dart';
 
-@ChopperApi(baseUrl: 'https://jsonplaceholder.typicode.com/posts')
-abstract class PostApiServie extends ChopperService {
+@ChopperApi(baseUrl: '/posts')
+abstract class PostApiService extends ChopperService {
   
   @Get()
   Future<Response> getPosts();
@@ -16,5 +16,15 @@ abstract class PostApiServie extends ChopperService {
     @Body() Map<String,dynamic> body,
   );
 
-  
+  static PostApiService create(){
+    final client = ChopperClient(
+      baseUrl: "https://jsonplaceholder.typicode.com",
+      services: [
+        _$PostApiService(),
+      ],
+      converter: JsonConverter(),
+    );
+
+    return _$PostApiService(client);
+  }
 }
