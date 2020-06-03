@@ -34,10 +34,19 @@ class HomePage extends StatelessWidget {
       future: Provider.of<PostApiService>(context).getPosts(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                snapshot.error.toString(),
+                textAlign: TextAlign.center,
+                textScaleFactor: 1.3,
+              ),
+            );
+          }
           final List posts = json.decode(snapshot.data.bodyString);
           return _buildPosts(context, posts);
         } else {
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         }
       },
     );
@@ -56,13 +65,14 @@ class HomePage extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               subtitle: Text(posts[index]["body"]),
-              onTap: ()=>_navgateToPost(context,posts[index]["id"]),
+              onTap: () => _navgateToPost(context, posts[index]["id"]),
             ),
           );
         });
   }
 
-  _navgateToPost(BuildContext context, int id){
-    Navigator.of(context).push(MaterialPageRoute(builder: (contexy)=>SinglePostPage(postId:id)));
+  _navgateToPost(BuildContext context, int id) {
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (contexy) => SinglePostPage(postId: id)));
   }
 }
