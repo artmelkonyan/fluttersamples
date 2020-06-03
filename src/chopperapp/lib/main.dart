@@ -1,10 +1,21 @@
 import 'package:chopperapp/data/PostApiService.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:logging/logging.dart';
 
 import 'homepage.dart';
 
-void main() => runApp(MyApp());
+void main() {  
+  _setupLogging();
+  runApp(MyApp());
+}
+
+void _setupLogging(){
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen((event) {
+    print('${event.level.name}: ${event.time}: ${event.message}');
+  });
+}
 
 class MyApp extends StatelessWidget {
   @override
