@@ -1,4 +1,7 @@
 import 'package:chopper/chopper.dart';
+import 'package:chopperapp/data/builtvalueconverter.dart';
+import 'package:chopperapp/model/built_post.dart';
+import 'package:built_collection/built_collection.dart';
 
 import 'MobileDataInterceptor.dart';
 
@@ -7,14 +10,14 @@ part 'PostApiService.chopper.dart';
 @ChopperApi(baseUrl: '/posts')
 abstract class PostApiService extends ChopperService {
   @Get()
-  Future<Response> getPosts();
+  Future<Response<BuiltList<BuiltPost>>> getPosts();
 
   @Get(path: "/{id}")
-  Future<Response> getPost(@Path("id") int id);
+  Future<Response<BuiltPost>> getPost(@Path("id") int id);
 
   @Post()
-  Future<Response> postPost(
-    @Body() Map<String, dynamic> body,
+  Future<Response<BuiltPost>> postPost(
+    @Body() BuiltPost body,
   );
 
   static PostApiService create() {
@@ -23,18 +26,19 @@ abstract class PostApiService extends ChopperService {
       services: [
         _$PostApiService(),
       ],
-      converter: JsonConverter(),
+      converter: BuiltValueConverter(),
       interceptors: [
-        HeadersInterceptor({'cache-control':'no-cache'}),
-        //HttpLoggingInterceptor(),
-        CurlInterceptor(),
-        (Request request) async {
-          if(request.method==HttpMethod.Post){
-            chopperLogger.info("Post Request");
-          }
-          return request;
-        },
-        MobileDataInterceptor()
+        HttpLoggingInterceptor()
+        // HeadersInterceptor({'cache-control':'no-cache'}),
+        // ,
+        // CurlInterceptor(),
+        // (Request request) async {
+        //   if(request.method==HttpMethod.Post){
+        //     chopperLogger.info("Post Request");
+        //   }
+        //   return request;
+        // },
+        // MobileDataInterceptor()
       ],
     );
 

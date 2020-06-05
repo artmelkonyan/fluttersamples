@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:chopper/chopper.dart';
+import 'package:chopperapp/model/built_post.dart';
 import 'package:chopperapp/singlepostpage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:built_collection/built_collection.dart';
 
 import 'data/PostApiService.dart';
 
@@ -19,8 +21,9 @@ class HomePage extends StatelessWidget {
       body: _buildBody(context),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
+          final newPost = BuiltPost((b)=>b..title="NewTitle"..body="newBody");
           final response = await Provider.of<PostApiService>(context)
-              .postPost({"key": "value"});
+              .postPost(newPost);
 
           print(response.body);
         },
@@ -30,7 +33,7 @@ class HomePage extends StatelessWidget {
   }
 
   FutureBuilder<Response> _buildBody(BuildContext context) {
-    return FutureBuilder<Response>(
+    return FutureBuilder<Response<BuiltList<BuiltPost>>>(
       future: Provider.of<PostApiService>(context).getPosts(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
@@ -43,7 +46,7 @@ class HomePage extends StatelessWidget {
               ),
             );
           }
-          final List posts = json.decode(snapshot.data.bodyString);
+          final BuiltList<BuiltPost> posts = snapshot.data.body;
           return _buildPosts(context, posts);
         } else {
           return Center(child: CircularProgressIndicator());
@@ -52,7 +55,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  ListView _buildPosts(BuildContext context, List posts) {
+  ListView _buildPosts(BuildContext context, BuiltList<BuiltPost> posts) {
     return ListView.builder(
         itemCount: posts.length,
         padding: EdgeInsets.all(8),
@@ -61,11 +64,11 @@ class HomePage extends StatelessWidget {
             elevation: 4,
             child: ListTile(
               title: Text(
-                posts[index]['title'],
+                posts[index].title,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              subtitle: Text(posts[index]["body"]),
-              onTap: () => _navgateToPost(context, posts[index]["id"]),
+              subtitle: Text(posts[index].body),
+              onTap: () => _navgateToPost(context, posts[index].id),
             ),
           );
         });
